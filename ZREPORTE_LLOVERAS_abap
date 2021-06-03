@@ -1,0 +1,32 @@
+*&---------------------------------------------------------------------*
+*& Report ZREPORTE_LLOVERAS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZREPORTE_LLOVERAS.
+
+tables zclientes_llover.
+parameters p_llov like zclientes_llover-kunnr.
+
+*declaro working area
+data wa_clientesllov type zclientes_llover.
+
+*hago la selección
+select single *
+into wa_clientesllov
+from zclientes_llover
+where kunnr = p_llov.
+
+if sy-subrc is initial.
+write 'Encontro el dato'.
+wa_clientesllov-observaciones = 'Cliente modificado'.
+update zclientes_llover from wa_clientesllov.
+else.
+write 'No encontro el dato'.
+wa_clientesllov-mandt = sy-mandt.
+wa_clientesllov-kunnr = p_llov.
+wa_clientesllov-observaciones = 'Nuevo cliente'.
+insert zclientes_llover from wa_clientesllov.
+endif.
+
+commit work.
